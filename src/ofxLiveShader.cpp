@@ -117,7 +117,11 @@ void ofxLiveShader::end(){
 void ofxLiveShader::setUniform1f(string name,float value){
     shader.shader.setUniform1f(name,value);
 }
-
+void ofxLiveShader::setUniform2f(string name,ofVec2f value){
+    shader.shader.setUniform2f(name,value);
+}
+    
+    
 void ofxLiveShader::setUniform3f(string name,ofVec3f value){
     shader.shader.setUniform3f(name,value);
 }
@@ -137,7 +141,9 @@ void ofxLiveShader::setUniformMatrix4f(string name,ofMatrix4x4 value){
 
 
 
-
+void ofxLiveShader::setUniformTexture(std::string name, ofTexture tex, int bindPoint){
+    shader.shader.setUniformTexture(name,tex,bindPoint);
+}
 
 
 

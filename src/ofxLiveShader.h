@@ -36,8 +36,13 @@ public:
     void setUniform3f(string name,ofVec3f value);
     void setUniform1f(string name,float value);
     void setUniform1i(string name,int value);
+    void setUniform2f(string name,ofVec2f value);
+    
     void setUniformMatrix4f(string name,ofMatrix4x4 value);
     void setUniformMatrix3f(string name,ofMatrix3x3 value);
+    void setUniformTexture(string name,ofTexture tex,int bindPoint);
+    
+    
     
     
     check_shader shader;
