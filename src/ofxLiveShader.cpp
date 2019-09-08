@@ -20,51 +20,130 @@ setupにシェーダの名前ぶっこむ
 
 void ofxLiveShader::setup(string name_v,string name_f){
 
-    shader.path_fragment =ofFilePath::getAbsolutePath(name_f,true);
-    shader.path_vertex = ofFilePath::getAbsolutePath(name_v,true);
-    stat(shader.path_vertex.c_str(), &shader.stat_buf_v);
-    stat(shader.path_fragment.c_str(),&shader.stat_buf_f);
+   path_fragment =ofFilePath::getAbsolutePath(name_f,true);
+path_vertex = ofFilePath::getAbsolutePath(name_v,true);
+    stat(path_vertex.c_str(), &stat_buf_v);
+    stat(path_fragment.c_str(),&stat_buf_f);
     cout <<"set shaders"+ofToString(name_v)+ofToString(name_f)<<endl;
-    shader.last_file_time_f = shader.stat_buf_f.st_mtime;
-       shader.last_file_time_v = shader.stat_buf_f.st_mtime;
+    last_file_time_f = stat_buf_f.st_mtime;
+       last_file_time_v = stat_buf_v.st_mtime;
     
-    shader.shader.load(shader.path_vertex,shader.path_fragment);
+    shader.load(path_vertex,path_fragment);
     
 }
 
+void ofxLiveShader::setup(string name_v,string name_f,string name_g){
+
+    shader.setGeometryInputType(inputType);
+    shader.setGeometryOutputType(outputType);
+    shader.setGeometryOutputCount(outputNum);
+    
+    
+    path_fragment =ofFilePath::getAbsolutePath(name_f,true);
+    path_vertex = ofFilePath::getAbsolutePath(name_v,true);
+     path_geometry = ofFilePath::getAbsolutePath(name_g,true);
+    
+    stat(path_vertex.c_str(), &stat_buf_v);
+    stat(path_fragment.c_str(),&stat_buf_f);
+        stat(path_geometry.c_str(),&stat_buf_g);
+    
+    cout <<"set shaders"+ofToString(name_v)+" "+ofToString(name_f)+" "+ofToString(name_g)<<endl;
+    last_file_time_f = stat_buf_f.st_mtime;
+    last_file_time_v = stat_buf_v.st_mtime;
+        last_file_time_g = stat_buf_g.st_mtime;
+    
+    shader.load(path_vertex,path_fragment,path_geometry);
+    
+    bGeometry = true;
+    
+}
+
+
 void ofxLiveShader::CheckandCompile(){
-    stat(shader.path_vertex.c_str(),&shader.stat_buf_v);
-     stat(shader.path_fragment.c_str(),&shader.stat_buf_f);
-    if(shader.stat_buf_f.st_mtime != shader.last_file_time_f || shader.stat_buf_v.st_mtime != shader.last_file_time_v){
-        cout <<"shader modify detect"<<endl;
-        shader.last_file_time_f = shader.stat_buf_f.st_mtime;
-        shader.last_file_time_v = shader.stat_buf_v.st_mtime;
-        string backup_v = shader.shader.getShaderSource(GL_VERTEX_SHADER);
-        string backup_f = shader.shader.getShaderSource(GL_FRAGMENT_SHADER);
-        shader.diff.clear();
-        readFromFile(&shader.src_vertex, shader.path_vertex,backup_v,&shader.diff);
-        readFromFile(&shader.src_fragment, shader.path_fragment,backup_f,&shader.diff);
-        for(int k = 0;k<shader.diff.size();k++){
-            cout<<shader.diff[k]<<endl;
+    if(!bGeometry){
+    stat(path_vertex.c_str(),&stat_buf_v);
+     stat(path_fragment.c_str(),&stat_buf_f);
+    
+    if(stat_buf_f.st_mtime != last_file_time_f || stat_buf_v.st_mtime != last_file_time_v){
+        cout <<"shader update!"<<endl;
+        last_file_time_f = stat_buf_f.st_mtime;
+        last_file_time_v = stat_buf_v.st_mtime;
+        string backup_v = shader.getShaderSource(GL_VERTEX_SHADER);
+        string backup_f = shader.getShaderSource(GL_FRAGMENT_SHADER);
+        diff.clear();
+        readFromFile(&src_vertex, path_vertex,backup_v,&diff);
+        readFromFile(&src_fragment, path_fragment,backup_f,&diff);
+        for(int k = 0;k<diff.size();k++){
+            cout<<diff[k]<<endl;
         }
         
-        shader.compile_f = shader.shader.setupShaderFromSource(GL_FRAGMENT_SHADER,shader.src_fragment);
-        shader.compile_v = shader.shader.setupShaderFromSource(GL_VERTEX_SHADER,shader.src_vertex);
+        compile_f = shader.setupShaderFromSource(GL_FRAGMENT_SHADER,src_fragment);
+        compile_v = shader.setupShaderFromSource(GL_VERTEX_SHADER,src_vertex);
         
-        if(shader.compile_f == true&&shader.compile_v == true){
+        if(compile_f == true&&compile_v == true){
             cout <<"success compile shader"<< endl;
         }else{
             cout <<"fail to compile shader"<< endl;
-            shader.shader.setupShaderFromSource(GL_FRAGMENT_SHADER,backup_f);
-            shader.shader.setupShaderFromSource(GL_VERTEX_SHADER,backup_v);
+            GLsizei bufSize;
+        
+            shader.setupShaderFromSource(GL_FRAGMENT_SHADER,backup_f);
+            shader.setupShaderFromSource(GL_VERTEX_SHADER,backup_v);
+            
         }
-        shader.shader.bindDefaults();
-        shader.shader.linkProgram();
-        shader.src_fragment.clear();
-        shader.src_vertex.clear();
+        shader.bindDefaults();
+        shader.linkProgram();
+        src_fragment.clear();
+        src_vertex.clear();
         
     }
     
+    }else{
+        
+        stat(path_vertex.c_str(),&stat_buf_v);
+        stat(path_fragment.c_str(),&stat_buf_f);
+        stat(path_geometry.c_str(),&stat_buf_g);
+        
+        if(stat_buf_f.st_mtime != last_file_time_f || stat_buf_v.st_mtime != last_file_time_v||stat_buf_g.st_mtime != last_file_time_g){
+            cout <<"shader update!"<<endl;
+            last_file_time_f = stat_buf_f.st_mtime;
+            last_file_time_v = stat_buf_v.st_mtime;
+            last_file_time_g = stat_buf_g.st_mtime;
+            string backup_v = shader.getShaderSource(GL_VERTEX_SHADER);
+            string backup_f = shader.getShaderSource(GL_FRAGMENT_SHADER);
+            string backup_g = shader.getShaderSource(GL_GEOMETRY_SHADER);
+            diff.clear();
+            readFromFile(&src_vertex, path_vertex,backup_v,&diff);
+            readFromFile(&src_fragment, path_fragment,backup_f,&diff);
+             readFromFile(&src_geometry, path_geometry,backup_g,&diff);
+            for(int k = 0;k<diff.size();k++){
+                cout<<diff[k]<<endl;
+            }
+            
+            compile_f = shader.setupShaderFromSource(GL_FRAGMENT_SHADER,src_fragment);
+            compile_v = shader.setupShaderFromSource(GL_VERTEX_SHADER,src_vertex);
+             compile_g = shader.setupShaderFromSource(GL_GEOMETRY_SHADER,src_geometry);
+            if(compile_f == true&&compile_v == true&&compile_g == true){
+                cout <<"success compile shader!"<< endl;
+            }else{
+                cout <<"fail to compile shader"<< endl;
+                GLsizei bufSize;
+                
+                shader.setupShaderFromSource(GL_FRAGMENT_SHADER,backup_f);
+                shader.setupShaderFromSource(GL_VERTEX_SHADER,backup_v);
+                shader.setupShaderFromSource(GL_GEOMETRY_SHADER,backup_g);
+                
+            }
+            shader.bindDefaults();
+            shader.linkProgram();
+            src_fragment.clear();
+            src_vertex.clear();
+            src_geometry.clear();
+            
+        }
+        
+        
+        
+    }
 }
 
 
@@ -106,46 +185,57 @@ void ofxLiveShader::change_path(string v_name,string f_name){
 }
 
 void ofxLiveShader::begin(){
-    shader.shader.begin();
+    shader.begin();
    
 }
 
 void ofxLiveShader::end(){
-    shader.shader.end();
+    shader.end();
 }
 
 void ofxLiveShader::setUniform1f(string name,float value){
-    shader.shader.setUniform1f(name,value);
+    shader.setUniform1f(name,value);
 }
 void ofxLiveShader::setUniform2f(string name,ofVec2f value){
-    shader.shader.setUniform2f(name,value);
+    shader.setUniform2f(name,value);
 }
     
     
 void ofxLiveShader::setUniform3f(string name,ofVec3f value){
-    shader.shader.setUniform3f(name,value);
+    shader.setUniform3f(name,value);
 }
 
 void ofxLiveShader::setUniform1i(string name,int value){
-    shader.shader.setUniform1f(name,value);
+    shader.setUniform1i(name,value);
 }
 
 void ofxLiveShader::setUniformMatrix3f(string name,ofMatrix3x3 value){
-    shader.shader.setUniformMatrix3f(name,value);
+    shader.setUniformMatrix3f(name,value);
 }
 
 
 void ofxLiveShader::setUniformMatrix4f(string name,ofMatrix4x4 value){
-    shader.shader.setUniformMatrix4f(name,value);
+    shader.setUniformMatrix4f(name,value);
 }
 
 
 
 void ofxLiveShader::setUniformTexture(std::string name, ofTexture tex, int bindPoint){
-    shader.shader.setUniformTexture(name,tex,bindPoint);
+    shader.setUniformTexture(name,tex,bindPoint);
 }
 
 
+void ofxLiveShader::setGeometryOutputType(GLenum type){
+    inputType = type;
+}
+
+void ofxLiveShader::setGeometryInputType(GLenum type){
+    inputType = type;
+}
+
+void ofxLiveShader::setGeometryOutputCount(int num){
+    outputNum = num;
+}
 
 
 
