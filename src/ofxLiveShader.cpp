@@ -205,6 +205,7 @@ void ofxLiveShader::setUniform3f(string name,ofVec3f value){
     shader.setUniform3f(name,value);
 }
 
+
 void ofxLiveShader::setUniform1i(string name,int value){
     shader.setUniform1i(name,value);
 }
