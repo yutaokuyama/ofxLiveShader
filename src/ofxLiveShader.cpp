@@ -239,5 +239,9 @@ void ofxLiveShader::setGeometryOutputCount(int num){
 }
 
 
+void ofxLiveShader::setBasicUniforms(){
+    shader.setUniform1f("time",ofGetElapsedTimef());
+    shader.setUniform2f("resolution",glm::vec2(ofGetWidth(),ofGetHeight()));
+}
 
 

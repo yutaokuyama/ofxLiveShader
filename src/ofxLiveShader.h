@@ -50,6 +50,8 @@ public:
     void setUniformTexture(string name,ofTexture tex,int bindPoint);
     
     
+    void setBasicUniforms();
+    
    // void drawMessage();
     
     //check_shader shader;
@@ -77,6 +79,7 @@ public:
     void setGeometryInputType(GLenum  type);
     void setGeometryOutputType(GLenum type);
     void setGeometryOutputCount(int num);
+
     
     GLenum inputType  = GL_TRIANGLES;
     GLenum outputType = GL_TRIANGLE_STRIP;
