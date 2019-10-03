@@ -45,6 +45,10 @@ public:
     void setUniform1i(string name,int value);
     void setUniform2f(string name,ofVec2f value);
     
+    void setUniform4f(string name,ofVec4f value);
+        void setUniform4f(string name, ofFloatColor value);
+    
+    
     void setUniformMatrix4f(string name,ofMatrix4x4 value);
     void setUniformMatrix3f(string name,ofMatrix3x3 value);
     void setUniformTexture(string name,ofTexture tex,int bindPoint);

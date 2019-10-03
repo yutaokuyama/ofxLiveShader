@@ -220,6 +220,17 @@ void ofxLiveShader::setUniformMatrix4f(string name,ofMatrix4x4 value){
 }
 
 
+void ofxLiveShader::setUniform4f(string name,ofVec4f value){
+    shader.setUniform4f(name,value);
+}
+
+
+void ofxLiveShader::setUniform4f(string name,ofFloatColor value){
+    shader.setUniform4f(name,value);
+}
+
+
+
 
 void ofxLiveShader::setUniformTexture(std::string name, ofTexture tex, int bindPoint){
     shader.setUniformTexture(name,tex,bindPoint);
