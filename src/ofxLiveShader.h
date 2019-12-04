@@ -3,7 +3,7 @@
 #include <sys/stat.h>
 #include <fstream>
 
-
+using namespace glm;
 
 struct check_shader{
     string path_fragment;
@@ -97,8 +97,25 @@ public:
 
 
 class ofxLiveShaderDirectory{
-    vector<ofxLiveShader> shaders;
+public:
+    //ofxLiveShaderDirectory();
+    
+    void allocate(int width,int height);
+    void allocate(vec2 size);
+    
+    void add(ofxLiveShader shader,string name);
     void update();
     bool remove(string _name);
+
+    
+        vector<ofxLiveShader> shaders;
     vector<string> names;
+    //----for postProcess
+        ofFbo process(ofTexture &tex);
+    ofFbo fbo[2];
+    int frame = 0;
+    void swap();
+    string getEnabledProcess();
+    
+    
 };

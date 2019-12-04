@@ -8,7 +8,7 @@
 
 ////使い方
 /*
-setupにシェーダの名前ぶっこむ
+ setupにシェーダの名前ぶっこむ
  updateでcompile〜回してあげるといける
  vectorでdiff渡してあげると差分が入って帰ってくる
  
@@ -19,21 +19,21 @@ setupにシェーダの名前ぶっこむ
 #include "ofxLiveShader.h"
 
 void ofxLiveShader::setup(string name_v,string name_f){
-
-   path_fragment =ofFilePath::getAbsolutePath(name_f,true);
-path_vertex = ofFilePath::getAbsolutePath(name_v,true);
+    
+    path_fragment =ofFilePath::getAbsolutePath(name_f,true);
+    path_vertex = ofFilePath::getAbsolutePath(name_v,true);
     stat(path_vertex.c_str(), &stat_buf_v);
     stat(path_fragment.c_str(),&stat_buf_f);
     cout <<"set shaders"+ofToString(name_v)+ofToString(name_f)<<endl;
     last_file_time_f = stat_buf_f.st_mtime;
-       last_file_time_v = stat_buf_v.st_mtime;
+    last_file_time_v = stat_buf_v.st_mtime;
     
     shader.load(path_vertex,path_fragment);
     
 }
 
 void ofxLiveShader::setup(string name_v,string name_f,string name_g){
-
+    
     shader.setGeometryInputType(inputType);
     shader.setGeometryOutputType(outputType);
     shader.setGeometryOutputCount(outputNum);
@@ -41,16 +41,16 @@ void ofxLiveShader::setup(string name_v,string name_f,string name_g){
     
     path_fragment =ofFilePath::getAbsolutePath(name_f,true);
     path_vertex = ofFilePath::getAbsolutePath(name_v,true);
-     path_geometry = ofFilePath::getAbsolutePath(name_g,true);
+    path_geometry = ofFilePath::getAbsolutePath(name_g,true);
     
     stat(path_vertex.c_str(), &stat_buf_v);
     stat(path_fragment.c_str(),&stat_buf_f);
-        stat(path_geometry.c_str(),&stat_buf_g);
+    stat(path_geometry.c_str(),&stat_buf_g);
     
     cout <<"set shaders"+ofToString(name_v)+" "+ofToString(name_f)+" "+ofToString(name_g)<<endl;
     last_file_time_f = stat_buf_f.st_mtime;
     last_file_time_v = stat_buf_v.st_mtime;
-        last_file_time_g = stat_buf_g.st_mtime;
+    last_file_time_g = stat_buf_g.st_mtime;
     
     shader.load(path_vertex,path_fragment,path_geometry);
     
@@ -61,49 +61,49 @@ void ofxLiveShader::setup(string name_v,string name_f,string name_g){
 
 bool ofxLiveShader::CheckandCompile(){
     if(!bGeometry){
-    stat(path_vertex.c_str(),&stat_buf_v);
-     stat(path_fragment.c_str(),&stat_buf_f);
-    
-    if(stat_buf_f.st_mtime != last_file_time_f || stat_buf_v.st_mtime != last_file_time_v){
-        cout <<"shader update!"<<endl;
-        last_file_time_f = stat_buf_f.st_mtime;
-        last_file_time_v = stat_buf_v.st_mtime;
-        string backup_v = shader.getShaderSource(GL_VERTEX_SHADER);
-        string backup_f = shader.getShaderSource(GL_FRAGMENT_SHADER);
-        diff.clear();
-        readFromFile(&src_vertex, path_vertex,backup_v,&diff);
-        readFromFile(&src_fragment, path_fragment,backup_f,&diff);
-        for(int k = 0;k<diff.size();k++){
-            cout<<diff[k]<<endl;
-        }
+        stat(path_vertex.c_str(),&stat_buf_v);
+        stat(path_fragment.c_str(),&stat_buf_f);
         
-        compile_f = shader.setupShaderFromSource(GL_FRAGMENT_SHADER,src_fragment);
-        compile_v = shader.setupShaderFromSource(GL_VERTEX_SHADER,src_vertex);
-        
-        if(compile_f == true&&compile_v == true){
-            cout <<"success compile shader"<< endl;
-            shader.bindDefaults();
-            shader.linkProgram();
-            src_fragment.clear();
-            src_vertex.clear();
-            return true;
-        }else{
-            cout <<"fail to compile shader"<< endl;
-            GLsizei bufSize;
-        
-            shader.setupShaderFromSource(GL_FRAGMENT_SHADER,backup_f);
-            shader.setupShaderFromSource(GL_VERTEX_SHADER,backup_v);
-            shader.bindDefaults();
-            shader.linkProgram();
-            src_fragment.clear();
-            src_vertex.clear();
-            return false;
+        if(stat_buf_f.st_mtime != last_file_time_f || stat_buf_v.st_mtime != last_file_time_v){
+            cout <<"shader update!"<<endl;
+            last_file_time_f = stat_buf_f.st_mtime;
+            last_file_time_v = stat_buf_v.st_mtime;
+            string backup_v = shader.getShaderSource(GL_VERTEX_SHADER);
+            string backup_f = shader.getShaderSource(GL_FRAGMENT_SHADER);
+            diff.clear();
+            readFromFile(&src_vertex, path_vertex,backup_v,&diff);
+            readFromFile(&src_fragment, path_fragment,backup_f,&diff);
+            for(int k = 0;k<diff.size();k++){
+                cout<<diff[k]<<endl;
+            }
+            
+            compile_f = shader.setupShaderFromSource(GL_FRAGMENT_SHADER,src_fragment);
+            compile_v = shader.setupShaderFromSource(GL_VERTEX_SHADER,src_vertex);
+            
+            if(compile_f == true&&compile_v == true){
+                cout <<"success compile shader"<< endl;
+                shader.bindDefaults();
+                shader.linkProgram();
+                src_fragment.clear();
+                src_vertex.clear();
+                return true;
+            }else{
+                cout <<"fail to compile shader"<< endl;
+                GLsizei bufSize;
+                
+                shader.setupShaderFromSource(GL_FRAGMENT_SHADER,backup_f);
+                shader.setupShaderFromSource(GL_VERTEX_SHADER,backup_v);
+                shader.bindDefaults();
+                shader.linkProgram();
+                src_fragment.clear();
+                src_vertex.clear();
+                return false;
+                
+            }
+            
             
         }
-
         
-    }
-    
     }else{
         
         stat(path_vertex.c_str(),&stat_buf_v);
@@ -121,14 +121,14 @@ bool ofxLiveShader::CheckandCompile(){
             diff.clear();
             readFromFile(&src_vertex, path_vertex,backup_v,&diff);
             readFromFile(&src_fragment, path_fragment,backup_f,&diff);
-             readFromFile(&src_geometry, path_geometry,backup_g,&diff);
+            readFromFile(&src_geometry, path_geometry,backup_g,&diff);
             for(int k = 0;k<diff.size();k++){
                 cout<<diff[k]<<endl;
             }
             
             compile_f = shader.setupShaderFromSource(GL_FRAGMENT_SHADER,src_fragment);
             compile_v = shader.setupShaderFromSource(GL_VERTEX_SHADER,src_vertex);
-             compile_g = shader.setupShaderFromSource(GL_GEOMETRY_SHADER,src_geometry);
+            compile_g = shader.setupShaderFromSource(GL_GEOMETRY_SHADER,src_geometry);
             if(compile_f == true&&compile_v == true&&compile_g == true){
                 cout <<"success compile shader!"<< endl;
             }else{
@@ -155,16 +155,16 @@ bool ofxLiveShader::CheckandCompile(){
 
 
 void ofxLiveShader::readFromFile(string *str,string path,string backup,vector<string> *diff){
-
+    
     //------split backup to row
     stringstream ss(backup);
     string item;
     vector<string> splited_backup;
     while(getline(ss, item)){
         splited_backup.push_back(item);
-         // ofLog()<<item<<endl;
+        // ofLog()<<item<<endl;
     }
-
+    
     ofBuffer buffer  = ofBufferFromFile(path);
     for (ofBuffer::Line it = buffer.getLines().begin(), end = buffer.getLines().end(); it != end; ++it) {
         string line = *it;
@@ -176,7 +176,7 @@ void ofxLiveShader::readFromFile(string *str,string path,string backup,vector<st
         }
         if(se){
             if(line != ""){
-            diff->push_back(line);
+                diff->push_back(line);
             }
         }
         if(line.empty() == false) {
@@ -193,7 +193,7 @@ void ofxLiveShader::change_path(string v_name,string f_name){
 
 void ofxLiveShader::begin(){
     shader.begin();
-   
+    
 }
 
 void ofxLiveShader::end(){
@@ -206,8 +206,8 @@ void ofxLiveShader::setUniform1f(string name,float value){
 void ofxLiveShader::setUniform2f(string name,ofVec2f value){
     shader.setUniform2f(name,value);
 }
-    
-    
+
+
 void ofxLiveShader::setUniform3f(string name,ofVec3f value){
     shader.setUniform3f(name,value);
 }
@@ -273,6 +273,25 @@ bool ofxLiveShader::update(){
 
 
 //--------shaderDirectory
+//シンプルに解決するポストエフェクトのみ一括で対応することに
+void ofxLiveShaderDirectory::allocate(int width,int height){
+    for(int i = 0;i<2;i++){
+        fbo[i].allocate(width,height);
+    }
+}
+
+void ofxLiveShaderDirectory::allocate(vec2 size){
+    for(int i = 0;i<2;i++){
+        fbo[i].allocate(size.x,size.y);
+    }
+}
+void ofxLiveShaderDirectory::add(ofxLiveShader shader,string name){
+    cout<<"add "<<name<<endl;
+    shaders.push_back(shader);
+    names.push_back(name);
+    cout<<"add直後"<<endl;
+    cout<<shaders.size()<<endl;
+}
 
 void ofxLiveShaderDirectory::update(){
     for(int i=0;i<shaders.size();i++){
@@ -281,14 +300,68 @@ void ofxLiveShaderDirectory::update(){
 }
 
 bool ofxLiveShaderDirectory::remove(string _name){
+    cout<<"リムられた"<<endl;
     for(int i = 0;i<shaders.size();i++){
         if(_name == shaders[i].name){
             shaders.erase(shaders.begin()+i);
+            names.erase(names.begin()+i);
             return true;
         }
     }
     return false;
 }
+
+
+void ofxLiveShaderDirectory::swap(){
+    frame = 1-frame;
+}
+string ofxLiveShaderDirectory::getEnabledProcess(){
+    string tmp = "";
+    //cout<<shaders.size()<<endl;
+    for(int i = 0;i<shaders.size();i++){
+        tmp += names[i];
+        tmp+= '\n';
+    }
+    return tmp;
+}
+
+ofFbo ofxLiveShaderDirectory::process(ofTexture  &tex){
+    cout<<"process"<<endl;
+    cout<<shaders.size()<<endl;
+    if(shaders.size()  == 0){
+        fbo[1-frame].begin();
+        ofClear(0,255);
+        tex.draw(0.0,0.0,ofGetWidth(),ofGetHeight());
+        fbo[1-frame].end();
+    return fbo[1-frame];
+    }
+    
+    for(int i = 0;i<shaders.size();i++){
+        fbo[1-frame].begin();
+        ofClear(0,255);
+        shaders[i].begin();
+        shaders[i].setUniform2f("resolution", vec2(tex.getWidth(),tex.getHeight()));
+        shaders[i].setUniform1f("time", ofGetElapsedTimef());
+        if(i == 0){
+            shaders[i].setUniformTexture("fbo", tex, 0);
+        }else{
+            shaders[i].setUniformTexture("fbo", fbo[frame].getTexture(), 0);
+        }
+        ofDrawRectangle(0.0,0.0,ofGetWidth(),ofGetHeight());
+         shaders[i].end();
+        fbo[1-frame].end();
+        swap();
+    }
+    return fbo[frame];
+}
+
+
+
+
+
+
+
+
 
 
 
