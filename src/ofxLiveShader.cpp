@@ -59,7 +59,7 @@ void ofxLiveShader::setup(string name_v,string name_f,string name_g){
 }
 
 
-void ofxLiveShader::CheckandCompile(){
+bool ofxLiveShader::CheckandCompile(){
     if(!bGeometry){
     stat(path_vertex.c_str(),&stat_buf_v);
      stat(path_fragment.c_str(),&stat_buf_f);
@@ -82,18 +82,25 @@ void ofxLiveShader::CheckandCompile(){
         
         if(compile_f == true&&compile_v == true){
             cout <<"success compile shader"<< endl;
+            shader.bindDefaults();
+            shader.linkProgram();
+            src_fragment.clear();
+            src_vertex.clear();
+            return true;
         }else{
             cout <<"fail to compile shader"<< endl;
             GLsizei bufSize;
         
             shader.setupShaderFromSource(GL_FRAGMENT_SHADER,backup_f);
             shader.setupShaderFromSource(GL_VERTEX_SHADER,backup_v);
+            shader.bindDefaults();
+            shader.linkProgram();
+            src_fragment.clear();
+            src_vertex.clear();
+            return false;
             
         }
-        shader.bindDefaults();
-        shader.linkProgram();
-        src_fragment.clear();
-        src_vertex.clear();
+
         
     }
     
@@ -254,5 +261,34 @@ void ofxLiveShader::setBasicUniforms(){
     shader.setUniform1f("time",ofGetElapsedTimef());
     shader.setUniform2f("resolution",glm::vec2(ofGetWidth(),ofGetHeight()));
 }
+
+void ofxLiveShader::setName(string _name){
+    name = _name;
+}
+
+
+bool ofxLiveShader::update(){
+    CheckandCompile();
+}
+
+
+//--------shaderDirectory
+
+void ofxLiveShaderDirectory::update(){
+    for(int i=0;i<shaders.size();i++){
+        shaders[i].update();
+    }
+}
+
+bool ofxLiveShaderDirectory::remove(string _name){
+    for(int i = 0;i<shaders.size();i++){
+        if(_name == shaders[i].name){
+            shaders.erase(shaders.begin()+i);
+            return true;
+        }
+    }
+    return false;
+}
+
 
 

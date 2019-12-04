@@ -32,9 +32,12 @@ class ofxLiveShader{
 public:
     
     void setup(string name_v,string name_f);
-    void setup(string name_v,string name_f,string name_g);
     
-    void CheckandCompile();
+    void setup(string name_v,string name_f,string name_g);
+    void setName(string _name);
+    
+    bool CheckandCompile();
+    bool update();
     void change_path(string v_name,string f_name);
     void readFromFile(string *str,string path,string backup,vector<string> *diff);
     
@@ -79,6 +82,7 @@ public:
     time_t last_file_time_g;
     
     ofShader shader;
+    string name;
     
     void setGeometryInputType(GLenum  type);
     void setGeometryOutputType(GLenum type);
@@ -89,8 +93,12 @@ public:
     GLenum outputType = GL_TRIANGLE_STRIP;
     int outputNum = 0;
     
-    
-    
-    
-    
+};
+
+
+class ofxLiveShaderDirectory{
+    vector<ofxLiveShader> shaders;
+    void update();
+    bool remove(string _name);
+    vector<string> names;
 };
