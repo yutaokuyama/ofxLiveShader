@@ -18,7 +18,7 @@ struct check_shader{
     bool compile_g;
     struct stat stat_buf_f;
     struct stat stat_buf_v;
-     struct stat stat_buf_g;
+    struct stat stat_buf_g;
     time_t last_file_time_f;
     time_t last_file_time_v;
     time_t last_file_time_g;
@@ -49,7 +49,7 @@ public:
     void setUniform2f(string name,ofVec2f value);
     
     void setUniform4f(string name,ofVec4f value);
-        void setUniform4f(string name, ofFloatColor value);
+    void setUniform4f(string name, ofFloatColor value);
     
     
     void setUniformMatrix4f(string name,ofMatrix4x4 value);
@@ -59,7 +59,7 @@ public:
     
     void setBasicUniforms();
     
-   // void drawMessage();
+    // void drawMessage();
     
     //check_shader shader;
     
@@ -87,7 +87,7 @@ public:
     void setGeometryInputType(GLenum  type);
     void setGeometryOutputType(GLenum type);
     void setGeometryOutputCount(int num);
-
+    
     
     GLenum inputType  = GL_TRIANGLES;
     GLenum outputType = GL_TRIANGLE_STRIP;
@@ -106,16 +106,18 @@ public:
     void add(ofxLiveShader shader,string name);
     void update();
     bool remove(string _name);
-
     
-        vector<ofxLiveShader> shaders;
+    
+    vector<ofxLiveShader> shaders;
     vector<string> names;
     //----for postProcess
-        ofFbo process(ofTexture &tex);
+    ofFbo process(ofTexture &tex);
     ofFbo fbo[2];
     int frame = 0;
     void swap();
     string getEnabledProcess();
+
+    int mod = 1;
     
     
 };

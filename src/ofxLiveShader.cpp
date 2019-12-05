@@ -286,11 +286,10 @@ void ofxLiveShaderDirectory::allocate(vec2 size){
     }
 }
 void ofxLiveShaderDirectory::add(ofxLiveShader shader,string name){
-    cout<<"add "<<name<<endl;
+   // cout<<"add "<<name<<endl;
     shaders.push_back(shader);
     names.push_back(name);
-    cout<<"add直後"<<endl;
-    cout<<shaders.size()<<endl;
+
 }
 
 void ofxLiveShaderDirectory::update(){
@@ -300,7 +299,7 @@ void ofxLiveShaderDirectory::update(){
 }
 
 bool ofxLiveShaderDirectory::remove(string _name){
-    cout<<"リムられた"<<endl;
+
     for(int i = 0;i<shaders.size();i++){
         if(_name == shaders[i].name){
             shaders.erase(shaders.begin()+i);
@@ -326,42 +325,30 @@ string ofxLiveShaderDirectory::getEnabledProcess(){
 }
 
 ofFbo ofxLiveShaderDirectory::process(ofTexture  &tex){
-    cout<<"process"<<endl;
-    cout<<shaders.size()<<endl;
-    if(shaders.size()  == 0){
-        fbo[1-frame].begin();
-        ofClear(0,255);
-        tex.draw(0.0,0.0,ofGetWidth(),ofGetHeight());
-        fbo[1-frame].end();
-    return fbo[1-frame];
-    }
+    fbo[1-frame].begin();
+    ofClear(0,255);
+    tex.draw(0.0,0.0,ofGetWidth(),ofGetHeight());
+    fbo[1-frame].end();
+    swap();
     
     for(int i = 0;i<shaders.size();i++){
         fbo[1-frame].begin();
         ofClear(0,255);
         shaders[i].begin();
-        shaders[i].setUniform2f("resolution", vec2(tex.getWidth(),tex.getHeight()));
+        shaders[i].setUniform2f("resolution", vec2(fbo[0].getWidth(),fbo[0].getHeight()));
         shaders[i].setUniform1f("time", ofGetElapsedTimef());
-        if(i == 0){
-            shaders[i].setUniformTexture("fbo", tex, 0);
-        }else{
+        shaders[i].setUniform1f("div",mod);
+  
             shaders[i].setUniformTexture("fbo", fbo[frame].getTexture(), 0);
-        }
+        
+        
         ofDrawRectangle(0.0,0.0,ofGetWidth(),ofGetHeight());
-         shaders[i].end();
+        shaders[i].end();
         fbo[1-frame].end();
         swap();
     }
     return fbo[frame];
 }
-
-
-
-
-
-
-
-
 
 
 
