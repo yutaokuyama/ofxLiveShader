@@ -58,6 +58,7 @@ public:
     
     
     void setBasicUniforms();
+    void setBasicUniforms(ofEasyCam &cam);
     
     // void drawMessage();
     

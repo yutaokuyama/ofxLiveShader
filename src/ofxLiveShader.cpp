@@ -271,6 +271,15 @@ bool ofxLiveShader::update(){
     CheckandCompile();
 }
 
+void ofxLiveShader::setBasicUniforms(ofEasyCam &cam){
+    shader.setUniform1f("time",ofGetElapsedTimef());
+    shader.setUniform2f("resolution",glm::vec2(ofGetWidth(),ofGetHeight()));
+    shader.setUniform3f("eyePos",cam.getPosition());
+    shader.setUniformMatrix3f("normalMatrix", glm::inverse(glm::transpose(cam.getModelViewMatrix())));
+    
+    
+}
+
 
 //--------shaderDirectory
 //シンプルに解決するポストエフェクトのみ一括で対応することに
