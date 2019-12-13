@@ -131,6 +131,16 @@ bool ofxLiveShader::CheckandCompile(){
             compile_g = shader.setupShaderFromSource(GL_GEOMETRY_SHADER,src_geometry);
             if(compile_f == true&&compile_v == true&&compile_g == true){
                 cout <<"success compile shader!"<< endl;
+                
+                
+                shader.bindDefaults();
+                shader.linkProgram();
+                src_fragment.clear();
+                src_vertex.clear();
+                src_geometry.clear();
+                
+                return true;
+                
             }else{
                 cout <<"fail to compile shader"<< endl;
                 GLsizei bufSize;
@@ -138,6 +148,14 @@ bool ofxLiveShader::CheckandCompile(){
                 shader.setupShaderFromSource(GL_FRAGMENT_SHADER,backup_f);
                 shader.setupShaderFromSource(GL_VERTEX_SHADER,backup_v);
                 shader.setupShaderFromSource(GL_GEOMETRY_SHADER,backup_g);
+                
+                shader.bindDefaults();
+                shader.linkProgram();
+                src_fragment.clear();
+                src_vertex.clear();
+                src_geometry.clear();
+                
+                return false;
                 
             }
             shader.bindDefaults();
