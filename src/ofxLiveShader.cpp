@@ -293,10 +293,23 @@ void ofxLiveShader::setBasicUniforms(ofEasyCam &cam){
     shader.setUniform1f("time",ofGetElapsedTimef());
     shader.setUniform2f("resolution",glm::vec2(ofGetWidth(),ofGetHeight()));
     shader.setUniform3f("eyePos",cam.getPosition());
-    shader.setUniformMatrix3f("normalMatrix", glm::inverse(glm::transpose(cam.getModelViewMatrix())));
-    
-    
+    shader.setUniformMatrix4f("normalMatrix", glm::inverse(glm::transpose(cam.getModelViewMatrix())));
 }
+
+void ofxLiveShader::setBasicUniforms(ofEasyCam &cam,vec3 lightPos){
+    
+    shader.setUniform1f("time",ofGetElapsedTimef());
+    shader.setUniform2f("resolution",glm::vec2(ofGetWidth(),ofGetHeight()));
+    shader.setUniform3f("eyePos",cam.getPosition());
+    shader.setUniformMatrix4f("normalMatrix", glm::inverse(glm::transpose(cam.getModelViewMatrix())));
+    shader.setUniform3f("lightPos",lightPos);
+    shader.setUniformMatrix4f("camViewMatrix",cam.getModelViewMatrix());
+}
+
+
+
+
+
 
 
 //--------shaderDirectory

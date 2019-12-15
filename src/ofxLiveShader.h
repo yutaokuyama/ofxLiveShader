@@ -59,6 +59,15 @@ public:
     
     void setBasicUniforms();
     void setBasicUniforms(ofEasyCam &cam);
+     void setBasicUniforms(ofEasyCam &cam,vec3 lightPos);
+    
+    void setCamAndLightUniforms(ofEasyCam &cam,vec3 lightPos);
+    
+    
+    
+    
+    //モデル変換行列ガンガンに使ってる中で座標とか送るとたぶんすごいずれるから送るタイミングズラせるようにしよう！
+    
     
     // void drawMessage();
     
