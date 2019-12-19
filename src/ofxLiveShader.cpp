@@ -286,7 +286,7 @@ void ofxLiveShader::setName(string _name){
 
 
 bool ofxLiveShader::update(){
-    CheckandCompile();
+   return  CheckandCompile();
 }
 
 void ofxLiveShader::setBasicUniforms(ofEasyCam &cam){
