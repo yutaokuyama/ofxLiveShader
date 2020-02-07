@@ -32,7 +32,7 @@ class ofxLiveShader{
 public:
     
     void setup(string name_v,string name_f);
-    
+    void setup(string name);
     void setup(string name_v,string name_f,string name_g);
     void setName(string _name);
     
@@ -63,6 +63,7 @@ public:
     
     void setCamAndLightUniforms(ofEasyCam &cam,vec3 lightPos);
     
+    void drawFillRectangle();
     
     
     

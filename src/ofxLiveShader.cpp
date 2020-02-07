@@ -18,8 +18,23 @@
 
 #include "ofxLiveShader.h"
 
+
 void ofxLiveShader::setup(string name_v,string name_f){
     
+    path_fragment =ofFilePath::getAbsolutePath(name_f,true);
+    path_vertex = ofFilePath::getAbsolutePath(name_v,true);
+    stat(path_vertex.c_str(), &stat_buf_v);
+    stat(path_fragment.c_str(),&stat_buf_f);
+    cout <<"set shaders"+ofToString(name_v)+ofToString(name_f)<<endl;
+    last_file_time_f = stat_buf_f.st_mtime;
+    last_file_time_v = stat_buf_v.st_mtime;
+    
+    shader.load(path_vertex,path_fragment);
+    
+}
+void ofxLiveShader::setup(string name){
+    string name_v = name+".vert";
+    string name_f = name+".frag";
     path_fragment =ofFilePath::getAbsolutePath(name_f,true);
     path_vertex = ofFilePath::getAbsolutePath(name_v,true);
     stat(path_vertex.c_str(), &stat_buf_v);
@@ -171,6 +186,10 @@ bool ofxLiveShader::CheckandCompile(){
     }
 }
 
+void ofxLiveShader::drawFillRectangle(){
+    ofDrawRectangle(0.0,0.0,ofGetWidth(), ofGetHeight());
+}
+
 
 void ofxLiveShader::readFromFile(string *str,string path,string backup,vector<string> *diff){
     
@@ -286,7 +305,7 @@ void ofxLiveShader::setName(string _name){
 
 
 bool ofxLiveShader::update(){
-   return  CheckandCompile();
+    return  CheckandCompile();
 }
 
 void ofxLiveShader::setBasicUniforms(ofEasyCam &cam){
@@ -326,10 +345,10 @@ void ofxLiveShaderDirectory::allocate(vec2 size){
     }
 }
 void ofxLiveShaderDirectory::add(ofxLiveShader shader,string name){
-   // cout<<"add "<<name<<endl;
+    // cout<<"add "<<name<<endl;
     shaders.push_back(shader);
     names.push_back(name);
-
+    
 }
 
 void ofxLiveShaderDirectory::update(){
@@ -339,7 +358,7 @@ void ofxLiveShaderDirectory::update(){
 }
 
 bool ofxLiveShaderDirectory::remove(string _name){
-
+    
     for(int i = 0;i<shaders.size();i++){
         if(_name == shaders[i].name){
             shaders.erase(shaders.begin()+i);
@@ -378,8 +397,8 @@ ofFbo ofxLiveShaderDirectory::process(ofTexture  &tex){
         shaders[i].setUniform2f("resolution", vec2(fbo[0].getWidth(),fbo[0].getHeight()));
         shaders[i].setUniform1f("time", ofGetElapsedTimef());
         shaders[i].setUniform1f("div",mod);
-  
-            shaders[i].setUniformTexture("fbo", fbo[frame].getTexture(), 0);
+        
+        shaders[i].setUniformTexture("fbo", fbo[frame].getTexture(), 0);
         
         
         ofDrawRectangle(0.0,0.0,ofGetWidth(),ofGetHeight());
