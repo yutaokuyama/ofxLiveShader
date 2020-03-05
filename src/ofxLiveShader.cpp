@@ -39,7 +39,7 @@ void ofxLiveShader::setup(string name){
     path_vertex = ofFilePath::getAbsolutePath(name_v,true);
     stat(path_vertex.c_str(), &stat_buf_v);
     stat(path_fragment.c_str(),&stat_buf_f);
-    cout <<"set shaders"+ofToString(name_v)+ofToString(name_f)<<endl;
+    cout <<"set shaders "+ofToString(name_v)+" "+ofToString(name_f)<<endl;
     last_file_time_f = stat_buf_f.st_mtime;
     last_file_time_v = stat_buf_v.st_mtime;
     
@@ -103,7 +103,7 @@ bool ofxLiveShader::CheckandCompile(){
                 src_vertex.clear();
                 return true;
             }else{
-                cout <<"fail to compile shader"<< endl;
+                cerr <<"fail to compile shader"<< endl;
                 GLsizei bufSize;
                 
                 shader.setupShaderFromSource(GL_FRAGMENT_SHADER,backup_f);
@@ -157,7 +157,7 @@ bool ofxLiveShader::CheckandCompile(){
                 return true;
                 
             }else{
-                cout <<"fail to compile shader"<< endl;
+                cerr <<"fail to compile shader"<< endl;
                 GLsizei bufSize;
                 
                 shader.setupShaderFromSource(GL_FRAGMENT_SHADER,backup_f);
