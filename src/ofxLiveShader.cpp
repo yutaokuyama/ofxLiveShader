@@ -30,7 +30,7 @@ void ofxLiveShader::setup(string name_v,string name_f){
     last_file_time_v = stat_buf_v.st_mtime;
     
     shader.load(path_vertex,path_fragment);
-    
+    isSetuped = true;
 }
 void ofxLiveShader::setup(string name){
     string name_v = name+".vert";
@@ -44,7 +44,7 @@ void ofxLiveShader::setup(string name){
     last_file_time_v = stat_buf_v.st_mtime;
     
     shader.load(path_vertex,path_fragment);
-    
+     isSetuped = true;
 }
 
 void ofxLiveShader::setup(string name_v,string name_f,string name_g){
@@ -70,6 +70,7 @@ void ofxLiveShader::setup(string name_v,string name_f,string name_g){
     shader.load(path_vertex,path_fragment,path_geometry);
     
     bGeometry = true;
+     isSetuped = true;
     
 }
 
@@ -229,12 +230,16 @@ void ofxLiveShader::change_path(string v_name,string f_name){
 }
 
 void ofxLiveShader::begin(){
+    if(isSetuped == false){
+        std::cerr<<"shader is not setuped"<<std::endl;
+    }
     shader.begin();
-    
+    textureCount = 0;
 }
 
 void ofxLiveShader::end(){
     shader.end();
+    textureCount =0;
 }
 
 void ofxLiveShader::setUniform1f(string name,float value){
@@ -278,8 +283,13 @@ void ofxLiveShader::setUniform4f(string name,ofFloatColor value){
 
 void ofxLiveShader::setUniformTexture(std::string name, ofTexture tex, int bindPoint){
     shader.setUniformTexture(name,tex,bindPoint);
+    textureCount++;
 }
 
+void ofxLiveShader::setUniformTexture(std::string name, ofTexture tex){
+    shader.setUniformTexture(name,tex,textureCount);
+    textureCount++;
+}
 
 void ofxLiveShader::setGeometryOutputType(GLenum type){
     inputType = type;
